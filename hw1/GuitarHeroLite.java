@@ -20,10 +20,10 @@ public class GuitarHeroLite {
                 } else if (key == 'c') {
                     stringC.pluck();
                 }
-            }
+    }
 
-        /* compute the superposition of samples */
-            double sample = stringA.sample() + stringC.sample();
+    /* compute the superposition of samples */
+    double sample = stringA.sample() + stringC.sample();
 
         /* play the sample on standard audio */
             StdAudio.play(sample);
