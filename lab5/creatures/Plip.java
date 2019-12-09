@@ -1,14 +1,12 @@
 package creatures;
 
-import huglife.Creature;
-import huglife.Direction;
-import huglife.Action;
-import huglife.Occupant;
+import huglife.*;
 
 import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * An implementation of a motile pacifist photosynthesizer.
@@ -35,9 +33,9 @@ public class Plip extends Creature {
      */
     public Plip(double e) {
         super("plip");
-        r = 0;
+        r = 99;
         g = 0;
-        b = 0;
+        b = 76;
         energy = e;
     }
 
@@ -57,7 +55,8 @@ public class Plip extends Creature {
      * that you get this exactly correct.
      */
     public Color color() {
-        g = 63;
+        g = (int)(96 * energy + 63);
+        //g = 63;
         return color(r, g, b);
     }
 
@@ -75,6 +74,10 @@ public class Plip extends Creature {
      */
     public void move() {
         // TODO
+        energy -= 0.15;
+        if (energy < 0) {
+            energy = 0;
+        }
     }
 
 
@@ -83,6 +86,10 @@ public class Plip extends Creature {
      */
     public void stay() {
         // TODO
+        energy += 0.2;
+        if (energy > 2) {
+            energy = 2;
+        }
     }
 
     /**
@@ -91,7 +98,10 @@ public class Plip extends Creature {
      * Plip.
      */
     public Plip replicate() {
-        return this;
+        //return this;
+        Plip baby = new Plip(energy() / 2);
+        energy = energy / 2;
+        return baby;
     }
 
     /**
@@ -114,17 +124,47 @@ public class Plip extends Creature {
         // TODO
         // (Google: Enhanced for-loop over keys of NEIGHBORS?)
         // for () {...}
+        for (Direction n : neighbors.keySet()) {
+            if (neighbors.get(n).name() == "empty") {
+                emptyNeighbors.add(n);
+            }
+            if (neighbors.get(n).name() == "clorus") {
+                anyClorus = true;
+            }
+        }
 
-        if (false) { // FIXME
+        if (emptyNeighbors.isEmpty()) { // FIXME
             // TODO
+            return new Action(Action.ActionType.STAY);
         }
 
         // Rule 2
         // HINT: randomEntry(emptyNeighbors)
+        if (energy >= 1.0) {
+            Plip baby = replicate();
+            Direction d = randomEntry(emptyNeighbors);
+            return new Action(Action.ActionType.REPLICATE, d);
+        }
 
         // Rule 3
-
+        if (anyClorus) {
+            Double r = Math.random();
+            if (r >= 0.5) {
+                return new Action(Action.ActionType.STAY);
+            }
+            Direction m = randomEntry(emptyNeighbors);
+            return new Action(Action.ActionType.MOVE, m);
+        }
         // Rule 4
         return new Action(Action.ActionType.STAY);
+    }
+
+    private Direction randomEntry(Deque<Direction> deque) {
+
+        Object[] d = deque.toArray();
+        int r = (int) (Math.random() * d.length);
+        return (Direction) d[r];
+
+        //return deque.element();
     }
 }

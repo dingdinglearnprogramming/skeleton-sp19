@@ -114,7 +114,22 @@ public class IntList {
         return p;
     }
 
+    public static IntList reverse(IntList A) {
+        if (A == null || A.rest == null) {
+            return A;
+        }
 
+        IntList ptr = A.rest;
+        A.rest = null;
+
+        while (ptr != null) {
+            IntList temp = ptr.rest;
+            ptr.rest = A;
+            A = ptr;
+            ptr = temp;
+        }
+        return A;
+    }
 
 
 
