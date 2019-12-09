@@ -90,4 +90,8 @@ public class Body{
 		this.yyPos += dt*this.yyVel;
 	}
 
+	public void draw(){
+		StdDraw.picture(this.xxPos,this.yyPos,"images/"+this.imgFileName);
+	}
+
 }
